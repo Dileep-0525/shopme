@@ -3,6 +3,8 @@ package com.dileep.shopme.admin.user;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -39,8 +41,8 @@ public class UserController {
 		Page<User> page = userService.listByPage(pageNum,sortField,sortDir,keyword);
 		List<User> listUsers = page.getContent();
 
-		long startCount  = (pageNum-1)  * UserServiceServiceImpl.USERS_PER_PAGE + 1;
-		long endCount = startCount + UserServiceServiceImpl.USERS_PER_PAGE - 1;
+		long startCount  = (pageNum-1)  * UserServiceImpl.USERS_PER_PAGE + 1;
+		long endCount = startCount + UserServiceImpl.USERS_PER_PAGE - 1;
 				if(endCount > page.getTotalElements()) {
 					endCount = page.getTotalElements();
 				}
@@ -92,7 +94,13 @@ public class UserController {
 		}
 
 		redirectAttributes.addFlashAttribute("message", "The User  has been saved Successfully.");
-		return "redirect:/users";
+		
+		return getRedirectURLtoAffectedUser(user);
+	}
+
+	private String getRedirectURLtoAffectedUser(User user) {
+		String firstPartOfEmail = user.getEmail().split("@")[0];
+		return "redirect:/users/page/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
 	}
 
 	@GetMapping("/users/edit/{id}")
@@ -140,4 +148,30 @@ public class UserController {
 		redirectAttributes.addFlashAttribute("message",message);
 		return "redirect:/users";
 	}
+
+
+	@GetMapping("/users/export/csv")
+	public void exportToCSV(HttpServletResponse httpServletResponse) throws IOException {
+		List<User> users = userService.listAll();
+		UserCSVExporter exporter = new UserCSVExporter();
+		exporter.export(users, httpServletResponse);
+	}
+	
+	@GetMapping("/users/export/excel")
+	public void exportToExcel(HttpServletResponse httpServletResponse) throws IOException {
+		List<User> users = userService.listAll();
+		UserExcelExporter exporter = new UserExcelExporter();
+		exporter.export(users, httpServletResponse);
+	}
+	
+	@GetMapping("/users/export/pdf")
+	public void exportToPdf(HttpServletResponse httpServletResponse) throws IOException {
+		List<User> users = userService.listAll();
+		UserPdfExporter exporter = new UserPdfExporter();
+		exporter.export(users, httpServletResponse);
+	}
+	
+
 }
+
+

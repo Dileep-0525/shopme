@@ -5,8 +5,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dileep.shopme.admin.user.UserService;
-
 	@RestController
 	public class UserRestController {
 	

@@ -17,7 +17,7 @@ import com.dileep.shopme.common.entity.User;
 
 @Service
 @Transactional
-public class UserServiceServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
 	public static final int USERS_PER_PAGE=4;
 	@Autowired
@@ -31,7 +31,7 @@ public class UserServiceServiceImpl implements UserService {
 
 	@Override
 	public List<User> listAll() {
-		return (List<User>) userRepository.findAll();
+		return (List<User>) userRepository.findAll(Sort.by("firstName").ascending());
 	}
 
 	@Override
