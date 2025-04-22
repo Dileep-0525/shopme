@@ -1,4 +1,4 @@
-package com.dileep.shopme.admin.user;
+package com.dileep.shopme.admin.user.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +19,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dileep.shopme.admin.FileUploadUtil;
+import com.dileep.shopme.admin.user.UserNotFoundException;
+import com.dileep.shopme.admin.user.UserService;
+import com.dileep.shopme.admin.user.UserServiceImpl;
+import com.dileep.shopme.admin.user.export.UserCSVExporter;
+import com.dileep.shopme.admin.user.export.UserExcelExporter;
+import com.dileep.shopme.admin.user.export.UserPdfExporter;
 import com.dileep.shopme.common.entity.Role;
 import com.dileep.shopme.common.entity.User;
 
@@ -59,7 +65,7 @@ public class UserController {
 		model.addAttribute("keyword", keyword);
 
 		
-		return "users";
+		return "users/users";
 	}
 
 	@GetMapping("/users/new")
@@ -72,7 +78,7 @@ public class UserController {
 		user.setEnabled(true);
 		model.addAttribute("listRoles", listRoles);
 		model.addAttribute("pageTitle", "Create new User");
-		return "user_form";
+		return "users/user_form";
 	}
 
 	@PostMapping("/users/save")
@@ -113,7 +119,7 @@ public class UserController {
 			model.addAttribute("listRoles", listRoles);
 			model.addAttribute("pageTitle", "Edit User(Id: " + id + ")");
 
-			return "user_form";
+			return "users/user_form";
 
 		} catch (UserNotFoundException ex) {
 			redirectAttributes.addFlashAttribute("message", ex.getMessage());
@@ -170,6 +176,8 @@ public class UserController {
 		UserPdfExporter exporter = new UserPdfExporter();
 		exporter.export(users, httpServletResponse);
 	}
+
+	
 	
 
 }

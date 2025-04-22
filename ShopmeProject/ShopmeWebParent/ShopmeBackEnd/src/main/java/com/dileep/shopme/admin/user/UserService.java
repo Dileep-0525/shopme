@@ -15,6 +15,8 @@ public interface UserService {
 	
 	public User saveUser(User user);
 	
+	public User getByEmail(String email);
+	
 	public boolean isEmailUnique(Integer id ,String email);
 
 	public User get(Integer id) throws UserNotFoundException;
@@ -24,4 +26,6 @@ public interface UserService {
 	public void updateUserenableStatus(Integer id , boolean enabled);
 
 	public Page<User> listByPage(int pageNum , String sortField , String sortDir,String keyword);
+
+	public User updateAccount(User userInForm);
 }

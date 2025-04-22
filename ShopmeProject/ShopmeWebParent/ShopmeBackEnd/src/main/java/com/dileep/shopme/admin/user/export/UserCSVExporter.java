@@ -1,4 +1,4 @@
-package com.dileep.shopme.admin.user;
+package com.dileep.shopme.admin.user.export;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -12,6 +12,7 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
+import com.dileep.shopme.admin.user.AbstractExporter;
 import com.dileep.shopme.common.entity.User;
 
 public class UserCSVExporter extends AbstractExporter{
