@@ -20,6 +20,8 @@ import com.dileep.shopme.common.entity.User;
 public class UserServiceImpl implements UserService {
 
 	public static final int USERS_PER_PAGE=4;
+	
+	
 	@Autowired
 	private UserRepository userRepository;
 
@@ -88,8 +90,6 @@ public class UserServiceImpl implements UserService {
 		} catch (NoSuchElementException ex) {
 			throw new UserNotFoundException("Could not find any user with ID" + id);
 		}
-
-//		return null;
 	}
 
 	@Override
@@ -104,7 +104,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updateUserenableStatus(Integer id, boolean enabled) {
-		// TODO Auto-generated method stub
 		userRepository.updateEnabledStatus(id, enabled);
 	}
 

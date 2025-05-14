@@ -71,7 +71,6 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.dileep.shopme</groupId>
 			<artifactId>ShopmeCommon</artifactId>

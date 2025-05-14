@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AbstractExporter {
 
-	public void setResponseHeader(HttpServletResponse httpServletResponse , String contentType , String extension) throws IOException {
+	public void setResponseHeader(HttpServletResponse httpServletResponse , String contentType , String extension, String entityName) throws IOException {
 
 		DateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
 		String timeStamp = dateTimeFormatter.format(new Date());
-		String fileName = "users_" + timeStamp + extension;
+		String fileName = entityName+ timeStamp + extension;
 		httpServletResponse.setContentType(contentType);
 
 		String headerKey = "Content-Disposition";

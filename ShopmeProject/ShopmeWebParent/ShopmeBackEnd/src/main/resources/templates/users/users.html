@@ -19,26 +19,9 @@
 			class="fa-solid fa-file-pdf fa-2x icon-dark mr-2"></a>
 	</div>
 
-	<div th:if="${message != null}" class="alert alert-success text-center">
-		[[${message}]]</div>
+	
 
-	<div>
-		<form th:action="@{/users/page/1}" class="form-inline m-3">
-			<input type="hidden" name="sortField" th:value="${sortField}" /> <input
-				type="hidden" name="sortDir" th:value="${sortDir}" /> Filter:
-			&nbsp; &nbsp; <input type="search" name="keyword"
-				th:value="${keyword}" required> &nbsp;&nbsp;
-			<button type="submit" value="Search" class="btn btn-primary">
-				<i class="fas fa-search "></i>
-			</button>
-			&nbsp;&nbsp;
-			<button type="button" value="clear" class="btn btn-secondary"
-				onclick="clearFilter()">
-				<i class="fas fa-eraser "></i>
-			</button>
-		</form>
-
-	</div>
+	<div th:replace="fragments :: search_form_and_message('/users/page/1')"/>
 
 	<div class="full-details">
 		<table
@@ -46,17 +29,17 @@
 			<thead class="thead-dark">
 				<tr>
 					<th class="hideable-column">
-						<th th:replace="fragments :: column_link('id', 'User ID','tag') " />
+						<th th:replace="fragments :: column_link('/users','id', 'User ID','tag') " />
 					</th>
 					<th>Photos</th>
 					<th class="hideable-column">
-					<th th:replace="fragments :: column_link('email', 'E-Mail','tag') " />
+					<th th:replace="fragments :: column_link('/users','email', 'E-Mail','tag') " />
 					</th>
 					<th
-						th:replace="fragments :: column_link('firstName', 'First Name','none') " />
-					<th th:replace="fragments :: column_link('lastName', 'Last Name','none') " />
+						th:replace="fragments :: column_link('/users','firstName', 'First Name','none') " />
+					<th th:replace="fragments :: column_link('/users','lastName', 'Last Name','none') " />
 					<th>Roles</th>
-					<th th:replace="fragments :: column_link('enabled', 'Enabled','none') " />
+					<th th:replace="fragments :: column_link('/users','enabled', 'Enabled','none') " />
 					</th>
 					<th></th>
 				</tr>
@@ -64,30 +47,20 @@
 			<tbody>
 				<tr th:each="user : ${listUsers}">
 					<td class="hideable-column">[[${user.id}]]</td>
-					<td><span th:if="${user.photos == null}"
-						class="fas fa-portrait fa-3x icon-silver"> </span> <img
-						th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}"
-						style="width: 100px" /></td>
+					<td>
+						<div th:replace="fragments :: user_photos"/>
+					</td>
 					<td class="hideable-column">[[${user.email}]]</td>
 					<td>[[${user.firstName}]]</td>
 					<td>[[${user.lastName}]]</td>
 					<td>[[${user.roles}]]</td>
-
-
-					<td><a th:if="${user.enabled == true}"
-							class="fas fa-check-circle fa-2x icon-green"
-							th:href="@{'/users/' +${user.id} + '/enabled/false'}"
-							title="Disable this user"></a>
-						 <a th:if="${user.enabled == false}"
-							class="fas fa-circle fa-2x icon-dark"
-							th:href="@{'/users/' +${user.id} + '/enabled/true'}"
-							title="Enable this user"></a></td>
-					<td><a class="fas fa-edit fa-2x icon-green"
-							th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user"></a>
-							&nbsp; 
-						<a class="fas fa-trash fa-2x icon-dark link-delete"
-							th:href="@{'/users/delete/' + ${user.id}}" th:userId="${user.id}"
-							title="Delete this user"></a>
+					<td>
+						<div th:replace="fragments :: status(${user.enabled},'user', '/users/' +${user.id})"></div>
+					</td>
+					<td>
+						<div th:replace="fragments :: edit('user', '/users/edit/' +${user.id})" />
+						&nbsp;&nbsp;
+						<div th:replace="fragments :: delete('user',${user.id} ,'/users/delete/' +${user.id},true)" />
 					</td>
 				</tr>
 			</tbody>
@@ -107,84 +80,20 @@
 				<div>[[${user.fullName}]]</div>
 				<div>[[${user.roles}]]</div>
 				<div class="mt-2">
-					<a th:if="${user.enabled == true}"
-							class="fas fa-check-circle fa-2x icon-green"
-							th:href="@{'/users/' +${user.id} + '/enabled/false'}"
-							title="Disable this user"></a>&nbsp; 
-					<a th:if="${user.enabled == false}"
-							class="fas fa-circle fa-2x icon-dark"
-							th:href="@{'/users/' +${user.id} + '/enabled/true'}"
-							title="Enable this user"></a>&nbsp; 
-					<a class="fas fa-edit fa-2x icon-green"
-						th:href="@{'/users/edit/' + ${user.id}}" title="Edit this user"></a>
-					&nbsp; 
-					<a class="fas fa-trash fa-2x icon-dark link-delete"
-						th:href="@{'/users/delete/' + ${user.id}}" th:userId="${user.id}"
-						title="Delete this user"></a>
+					<div th:replace="fragments :: status(${user.enabled},'user', '/users/' +${user.id})"></div>	
+						&nbsp;
+						<div th:replace="fragments :: edit('user', '/users/edit/' +${user.id})"/>
+						&nbsp;
+						<div th:replace="fragments :: delete('user',${user.id} ,'/users/edit/' +${user.id},true)"/>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="text-center m-1" th:if="${totalItems >0}">
-		<span>Showing user # [[${startCount}]] to [[${endCount}]] of
-			[[${totalItems}]]</span>
-	</div>
-	<div class="text-center m-1" th:unless="${totalItems>0}">
-		<span>No Users Found</span>
-	</div>
-
-	<div th:if="${totalPages > 1}">
-		<nav>
-			<ul class="pagination justify-content-center">
-				<li th:class="${currentPage >1 ? 'page-item' :'page-item disabled'}">
-					<a class="page-link" th:replace="fragments :: page_link(1,'First')">
-				</a>
-				</li>
-
-				<li th:class="${currentPage >1 ? 'page-item' :'page-item disabled'}">
-					<a class="page-link"
-					th:replace="fragments :: page_link(${currentPage - 1} , 'Previous')"></a>
-				</li>
-
-				<li th:class="${currentPage !=i ? 'page-item' :'page-item active'}"
-					th:each="i :${#numbers.sequence (1,totalPages)}"><a
-					class="page-link" th:replace="fragments :: page_link(${i} , ${i})">
-				</a></li>
-				<li
-					th:class="${currentPage < totalPages ? 'page-item' :'page-item disabled'}">
-					<a class="page-link"
-					th:replace="fragments :: page_link(${currentPage + 1} , 'Next')"></a>
-				</li>
-				<li
-					th:class="${currentPage < totalPages ? 'page-item' :'page-item disabled'}">
-					<a class="page-link"
-					th:replace="fragments :: page_link(${totalPages} , 'Last')"></a>
-				</li>
-			</ul>
-		</nav>
-	</div>
-
-	<div class="modal fade text-center" id="confirmModal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Delete Confirmation</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-
-				<div class="modal-body">
-					<span id="confirmText"></span>
-				</div>
-
-				<div class="modal-footer">
-					<a class="btn btn-success" href="" id="yesButton">Yes</a>
-					<button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-				</div>
-			</div>
-		</div>
-	</div>
+		<div th:replace="fragments :: pagination('/users' , 'users' )"></div>
 	
+		<div th:replace="modal_fragments :: confirm_modal"></div>
+		
 		<div th:replace="fragments :: footer"></div>
 	
 	</div>

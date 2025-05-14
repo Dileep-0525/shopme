@@ -1,9 +1,6 @@
 package com.dileep.shopme.admin.user.export;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +16,7 @@ public class UserCSVExporter extends AbstractExporter{
 
 	public void export(List<User> users , HttpServletResponse httpServletResponse) throws IOException {
 		
-		super.setResponseHeader(httpServletResponse, "text/csv", ".csv");
+		super.setResponseHeader(httpServletResponse, "text/csv", ".csv", "users_");
 		
 		ICsvBeanWriter csvBeanWriter = new CsvBeanWriter(httpServletResponse.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
