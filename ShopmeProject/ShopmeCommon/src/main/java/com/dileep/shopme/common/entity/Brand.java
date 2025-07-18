@@ -1,5 +1,6 @@
 package com.dileep.shopme.common.entity;
 
+import java.beans.Transient;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -75,12 +76,23 @@ public class Brand {
 	public Brand() {
 		super();
 	}
+	
+	public Brand(Long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
 
 	@Override
 	public String toString() {
 		return "Brand [id=" + id + ", name=" + name + ", logo=" + logo + ", categories=" + categories + "]";
 	}
 	
+	@Transient
+	public String getLogoPath() {
+		if(id == null || logo == null) return "/images/img-thumbnail.png";
+		return "/brand-logos/" +this.id + "/" +this.logo;
+	}
 	
 	
 }

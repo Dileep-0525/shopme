@@ -19,10 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dileep.shopme.admin.FileUploadUtil;
 import com.dileep.shopme.admin.category.export.CategoryCSVExporter;
-import com.dileep.shopme.admin.user.UserNotFoundException;
-import com.dileep.shopme.admin.user.export.UserCSVExporter;
 import com.dileep.shopme.common.entity.Category;
-import com.dileep.shopme.common.entity.User;
 @Controller
 public class CategoryController {
 
@@ -102,7 +99,7 @@ public class CategoryController {
 
 			return "categories/category_form";
 
-		} catch (UserNotFoundException ex) {
+		} catch (CategoryNotFoundException ex) {
 			redirectAttributes.addFlashAttribute("message", ex.getMessage());
 			return "redirect:/categories";
 		}
@@ -130,7 +127,7 @@ public class CategoryController {
 			String categoryDir = "../category-images/" + id;
 			FileUploadUtil.removeDir(categoryDir);
 			redirectAttributes.addFlashAttribute("message", "The Category Id " + id + " has been deleted successfully");
-		} catch (UserNotFoundException ex) {
+		} catch (CategoryNotFoundException ex) {
 			redirectAttributes.addFlashAttribute("message", ex.getMessage());
 
 		}

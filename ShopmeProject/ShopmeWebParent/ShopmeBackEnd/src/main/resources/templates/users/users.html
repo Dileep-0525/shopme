@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <hmtl xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: page_head(' Users - Shopme Admin')"></head>
+<head th:replace="fragments :: page_head(' Users - Shopme Admin', 'none')"></head>
 
 <body>
 	<div class="container-fluid">
@@ -97,8 +97,11 @@
 		<div th:replace="fragments :: footer"></div>
 	
 	</div>
+	<script th:src="@{/js/common_list.js}"></script>
 	<script type="text/javascript">
-		$(document).ready(
+		
+	
+	/* $(document).ready(
 				function() {
 					$(".link-delete")
 							.on(
@@ -115,8 +118,15 @@
 														+ userId + "?");
 										$("#confirmModal").modal();
 									});
-				});
+				}); */
 
+				$(document).ready(function(){
+					$(".link-delete").on("click",function(e){
+						e.preventDefault();
+						showDeleteConfirmModal($(this),'user')
+					})
+				})
+				
 		function clearFilter() {
 			window.location = "[[@{/users}]]"
 		}

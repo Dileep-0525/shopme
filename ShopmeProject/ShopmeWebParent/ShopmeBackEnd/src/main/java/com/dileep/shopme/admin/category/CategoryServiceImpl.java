@@ -15,17 +15,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.dileep.shopme.admin.user.UserNotFoundException;
+import com.dileep.shopme.admin.brand.IBrandRepository;
 import com.dileep.shopme.common.entity.Category;
 
 @Service
 public class CategoryServiceImpl implements ICategoryService {
 
-	public static final int ROOT_CATEGORIES_PER_PAGE = 4;
+	public static final int ROOT_CATEGORIES_PER_PAGE = 1;
 	
 	@Autowired
 	private ICategoryRepository categoryRepository;
 
+	@Autowired
+	private IBrandRepository brandRepository;
+	
 	@Override
 	public List<Category> listAll(String sortDir) {
 		Sort sort = Sort.by("name");
@@ -116,11 +119,11 @@ public class CategoryServiceImpl implements ICategoryService {
 	}
 
 	@Override
-	public Category get(Long id) throws UserNotFoundException {
+	public Category get(Long id) throws CategoryNotFoundException {
 		try {
 			return categoryRepository.findById(id).get();
 		} catch (NoSuchElementException ex) {
-			throw new UserNotFoundException("Could not find any user with ID" + id);
+			throw new CategoryNotFoundException("Could not find any Category with ID" + id);
 		}
 	}
 
@@ -179,11 +182,13 @@ public class CategoryServiceImpl implements ICategoryService {
 	}
 	
 	@Override
-	public void delete(Long id) throws UserNotFoundException {
+	public void delete(Long id) throws CategoryNotFoundException {
 		Long countById = categoryRepository.countById(id);
-		
+		Long count = brandRepository.countById(id);
 		if(countById == null || countById == 0) {
-			throw new UserNotFoundException("Could not find any user with ID" + id);
+			throw new CategoryNotFoundException("Could not find any category with ID" + id);
+		}else if(count >= 0) {
+			throw new CategoryNotFoundException("This Category is already using in brands " + id);
 		}
 		categoryRepository.deleteById(id);
 	}

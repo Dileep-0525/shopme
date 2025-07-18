@@ -22,33 +22,31 @@
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/categories}" >Categories</a>
 					</li>
-					</th:block>
-					<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/brands}" >Brands</a>
 					</li>
 					</th:block>
-					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson','Editor','Shipper')">
+					<th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson','Editor','Shipper')">
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/products}" >Products</a>
 					</li>
 					</th:block>
-					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson')">
+					<th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/customers}" >Customers</a>
 					</li>
 					</th:block>
-					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson')">
+					<th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/shipping}" >Shipping</a>
 					</li>
 					</th:block>
-					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson','Shipper')">
+					<th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson','Shipper')">
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/orders}" >Orders</a>
 					</li>
 					</th:block>
-					<th:block sec:authorize="hasAnyAuthority('Admin','Salesperson')">
+					<th:block sec:authorize="hasAnyAuthority('Admin','SalesPerson')">
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/sales Report}" >Sales Report</a>
 					</li>

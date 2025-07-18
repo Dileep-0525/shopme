@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <hmtl xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: page_head(' Brands - Shopme Admin')"></head>
+<head th:replace="fragments :: page_head(' Brands - Shopme Admin', 'none')"></head>
 
 <body>
 	<div class="container-fluid">
@@ -9,37 +9,64 @@
 
 		<div class="container-fluid">
 			<h2>Manage Brands</h2>
+			<a th:href="@{/brands/new}"
+			class="fa-solid fa-user-plus fa-2x icon-dark mr-2"></a> &nbsp;
+		|&nbsp; <a th:href="@{/brands/export/csv}"
+			class="fa-solid fa-file-csv fa-2x icon-dark mr-2"> </a>
 		</div>
 
+
+		<div th:replace="fragments :: search_form_and_message('/brands/page/1')"/>
+	
 		<div class="full-details">
-			<table
-				class="table table-bordered table-striped table-hover table-responsive-xl">
+			<table	class="table table-bordered table-striped table-hover table-responsive-xl">
 				<thead class="thead-dark">
 					<tr>
 						<th class="hideable-column">Brand Id</th>
 						<th>Logo</th>
-						<th class="hideable-column">Brand Name</th>
+						<th th:replace="fragments :: column_link('/brands','name','Brand Name' ,'none')">
 						<th>Categories</th>
-						<th>Actions</th>
 						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="brand : ${brands}">
 						<td class="hideable-column">[[${brand.id}]]</td>
-						<td class="hideable-column">[[${brand.logo}]]</td>
+						<td >
+							<img th:src="@{${brand.logoPath}}" style="width:100px" class="img-fluid" />
+						</td>
 						<td>[[${brand.name}]]</td>
-						<td>[[${brand.categories}]]</td>
 						<td>
-							<!-- 	<div th:replace="fragments :: edit('brand', '/brandss/edit/' +${brand.id})" />
+							<th:block th:each="cat : ${brand.categories}">
+							<span class="badge badge-secondary" th:text="${cat.name}"></span>
+							</th:block>
+						</td>
+						<td>
+								<div th:replace="fragments :: edit('brand', '/brands/edit/' +${brand.id})" />
 						&nbsp;&nbsp;
-						<div th:replace="fragments :: delete('brand',${brand.id} ,'/brands/delete/' +${brand.id},true)" /> -->
+						<div th:replace="fragments :: delete('brand',${brand.id} ,'/brands/delete/' +${brand.id},true)" />
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-
+		
+	<div class="less-details">
+			<div th:each="brand : ${brands}" class="row m-1">
+			<div class="col-6">
+					<img th:src="@{${brand.logoPath}}" style="width:100px" class="img-fluid" />
+			</div>
+			<div class="col-6">
+				<div>[[${brand.name}]]</div>
+				<div class="mt-2">
+						<div th:replace="fragments :: edit('brand', '/brands/edit/' +${brand.id})"/>
+						&nbsp;
+						<div th:replace="fragments :: delete('brand',${brand.id} ,'/brands/edit/' +${brand.id},true)"/>
+				</div>
+			</div>
+		</div>
+		</div>
+		
 
 		<div th:replace="fragments :: pagination('/brands' , 'brands' )"></div>
 
@@ -48,8 +75,10 @@
 		<div th:replace="fragments :: footer"></div>
 
 	</div>
+	<script th:src="@{/js/common_list.js}"></script>
 	<script type="text/javascript">
-		/* $(document).ready(
+		
+	/* $(document).ready(
 				function() {
 					$(".link-delete")
 							.on(
@@ -58,16 +87,23 @@
 										e.preventDefault();
 										link = $(this);
 										//alert($(this).attr("href"));
-										userId = link.attr("userId");
+										let brandId = link.attr("brandId");
 										$("#yesButton").attr("href",
 												link.attr("href"));
 										$("#confirmText").text(
-												"Are you sure you want to delete this user ID: "
-														+ userId + "?");
+												"Are you sure you want to delete this brand ID: "
+														+ brandId + "?");
 										$("#confirmModal").modal();
 									});
-				}); */
+				});  */
 
+		$(document).ready(function(){
+			$(".link-delete").on("click",function(e){
+				e.preventDefault();
+				showDeleteConfirmModal($(this),'brand')
+			})
+		})
+				
 		function clearFilter() {
 			window.location = "[[@{/brands}]]"
 		}

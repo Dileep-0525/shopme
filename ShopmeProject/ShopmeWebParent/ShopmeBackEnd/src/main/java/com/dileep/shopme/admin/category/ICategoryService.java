@@ -15,12 +15,12 @@ public interface ICategoryService {
 
 	public Category save(Category category);
 
-	public Category get(Long id) throws UserNotFoundException;
+	public Category get(Long id) throws CategoryNotFoundException;
 
 	public String checkUnique(Long id, String name, String alias);
 
 	public void updateUserenableStatus(Long id, boolean enabled);
 
-	public void delete(Long id) throws UserNotFoundException;
+	public void delete(Long id) throws CategoryNotFoundException;
 
 }
