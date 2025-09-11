@@ -9,11 +9,46 @@ dropdownBrands = $("#brand");
 			dropdownCategories.empty(); 
 			getCategories();
 		});
-		console.log(getCategories());
+		
 		getCategories();
+		
+		$("input[name='extraImage']").each(function(index){
+			$(this).change(function(){
+				showExtraImageThumbnail(this,index);
+			});
+		});
 	});
 	
 	
+	function showExtraImageThumbnail(fileInput,index){
+		var file = fileInput.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$("#extrathumbnail" +index).attr("src", e.target.result);
+			};
+			reader.readAsDataURL(file);
+			
+			addNextExtraImageSection(index + 1);
+	}
+
+	function addNextExtraImageSection(index){
+		html = `
+				<div class="col border m-3 p-2">
+					<div><label>Extra Image #${index + 1 }:</label></div>
+					<div class="m-2">
+						<img id="extrathumbnail${index}" alt="Extra Image #${index + 1} preview" class="img-fluid" src="${defaultImageThumbnailSrc}">
+					</div>
+					<div>
+						<input type="file" name="extraImage"
+							onchange="showExtraImageThumbnail(this,${index})"
+						 accept="image/png,image.jpeg"/>
+					</div>
+				</div>
+		`;
+		
+		$("#divProductImages").append(html);
+	}
+		
 	function checkUnique(form){
         // Check if the product name is unique
         productId = $("#id").val();
@@ -21,11 +56,9 @@ dropdownBrands = $("#brand");
       
         csrfValue = $("input[name='_csrf']").val();
         
-        url = "[[@{/products/check_unique}]]";
-        
         params = {id: productId, name: productName, _csrf: csrfValue};
         
-        $.post(url, params, function(response){
+        $.post(checkUniqueUrl, params, function(response){
             if(response == "OK"){
                form.submit();
             } else if(response == "Duplicate"){
