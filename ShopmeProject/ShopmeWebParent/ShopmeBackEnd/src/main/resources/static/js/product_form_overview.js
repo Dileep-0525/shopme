@@ -10,10 +10,17 @@ dropdownBrands = $("#brand");
 			getCategories();
 		});
 		
-		getCategories();
+		getCategoriesForNewForm();
 	});
 	
-	
+	function getCategoriesForNewForm(){
+		catIdField = $("#categoryId");
+		editMode = false;
+		if(catIdField.length){
+			editMode = true ;
+		}
+		if(!editMode) getCategories();
+	}
 	
 		
 	function checkUnique(form){

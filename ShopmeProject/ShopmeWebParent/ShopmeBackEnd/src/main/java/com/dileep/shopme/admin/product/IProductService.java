@@ -15,4 +15,6 @@ public interface IProductService {
 	public void updateEnabledStatus(Long id, boolean enabled);
 	
 	public void delete(Long id);
+
+	public Product get(Long id) throws ProductNotFoundException;
 }
