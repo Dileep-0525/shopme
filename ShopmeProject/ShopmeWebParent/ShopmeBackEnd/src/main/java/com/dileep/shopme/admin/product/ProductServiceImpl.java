@@ -2,6 +2,7 @@ package com.dileep.shopme.admin.product;
 
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,4 +66,14 @@ public class ProductServiceImpl implements IProductService{
 		}
 		productRepository.deleteById(id);
 	}
+	
+	@Override
+	public Product get(Long id) throws ProductNotFoundException {
+		try {
+			return productRepository.findById(id).get();
+		} catch (NoSuchElementException e) {
+			throw new ProductNotFoundException("Could not find any product with ID "+id);
+		}
+	}
+	
 }
