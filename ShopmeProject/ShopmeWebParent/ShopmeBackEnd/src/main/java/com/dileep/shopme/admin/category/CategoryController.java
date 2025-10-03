@@ -92,13 +92,11 @@ public class CategoryController {
 	public String editUser(@PathVariable(name = "id") Long id, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			Category category = categoryService.get(id);
-//			List<Category> categories = categoryService.listAll("asc");
+			List<Category> categories = categoryService.listAll("asc");
 			model.addAttribute("category", category);
-//			model.addAttribute("categories", categories); 
+			model.addAttribute("categories", categories); 
 			model.addAttribute("pageTitle", "Edit Category(Id: " + id + ")");
-
 			return "categories/category_form";
-
 		} catch (CategoryNotFoundException ex) {
 			redirectAttributes.addFlashAttribute("message", ex.getMessage());
 			return "redirect:/categories";

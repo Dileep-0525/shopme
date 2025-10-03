@@ -80,11 +80,6 @@ public class CategoryServiceImpl implements ICategoryService {
 	}
 
 	@Override
-	public Category save(Category category) {
-		return categoryRepository.save(category);
-	}
-
-	@Override
 	public List<Category> listCategoriesUsedInForm() {
 		List<Category> categoriesUsedInForm = new ArrayList<>();
 		Iterable<Category> categoriesInDB = categoryRepository.findRootCategories(Sort.by("name").ascending());
@@ -227,6 +222,16 @@ public class CategoryServiceImpl implements ICategoryService {
 		}
 	}
 	
+	@Override
+	public Category save(Category category) {
+		Category parent = category.getParent();
+		if(parent !=null) {
+			String allParentIds = parent.getAllParentIDs() == null ? "-" :parent.getAllParentIDs();
+			allParentIds += String.valueOf(parent.getId()) + "-";
+			category.setAllParentIDs(allParentIds);
+		}
+		return categoryRepository.save(category);
+	}
 	
 	
 }

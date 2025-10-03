@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<hmtl xmlns:th="http://www.thymeleaf.org">
+<hmtl xmlns:th="http://www.thymeleaf.org"
+		 xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head th:replace="fragments :: page_head(' Products - Shopme Admin' , 'none')"></head>
 
 <body>
@@ -9,25 +10,68 @@
 
 		<div class="container-fluid">
 			<h2>Manage Products</h2>
-			<a th:href="@{/products/new}"
-			class="fa-solid fa-user-plus fa-2x icon-dark mr-2"></a> &nbsp;
-		|&nbsp; <a th:href="@{/products/export/csv}"
-			class="fa-solid fa-file-csv fa-2x icon-dark mr-2"> </a>
+			<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+				<a th:href="@{/products/new}" class="fa-solid fa-user-plus fa-2x icon-dark mr-2"></a> &nbsp;|&nbsp; 
+				<a th:href="@{/products/export/csv}" class="fa-solid fa-file-csv fa-2x icon-dark mr-2"> </a>
+			</th:block>
 		</div>
 
-
-		 <div th:replace="fragments :: search_form_and_message('/products/page/1')"/> 
+		<div>
+		<form th:action="@{/products/page/1}" class="form-inline m-3" id="searchForm">
+			<input type="hidden" name="sortField" th:value="${sortField}" /> 
+			<input type="hidden" name="sortDir" th:value="${sortDir}" /> 
+			
+			Category:
+			&nbsp;&nbsp;
+			<select class="form-control" name="categoryId" id="dropdownCategory">
+				<option value="0">All Categories</option>
+				<th:block th:each="cat:${listCategories}">
+					<option th:value="${cat.id}" th:selected="(${categoryId} == ${cat.id})">[[${cat.name}]]</option>
+				</th:block>
+				
+			</select>
+			
+			
+			Filter:
+			&nbsp; &nbsp; <input type="search" name="keyword"
+				th:value="${keyword}" required> &nbsp;&nbsp;
+			<button type="submit" value="Search" class="btn btn-primary">
+				<i class="fas fa-search "></i>
+			</button>
+			&nbsp;&nbsp;
+			<button type="button" value="clear" class="btn btn-secondary"
+				onclick="clearFilter()">
+				<i class="fas fa-eraser "></i>
+			</button>
+		</form>
+		<div th:if="${message != null}" class="alert alert-success text-center">
+		[[${message}]]
+		</div>
+		</div>
+	
 	
 		<div class="full-details">
 			<table	class="table table-bordered table-striped table-hover table-responsive-xl">
 				<thead class="thead-dark">
 					<tr>
-						<th class="hideable-column">Product Id</th>
+						<th class="hideable-column">
+						<th th:replace="fragments :: column_link('/products','id','ID' ,'tag')" />
+						</th>
 						<th>Main Image</th>
-						<th>Product Name</th>
-						<th>Brand</th>
-						<th>Category</th>
+						<th th:replace="fragments :: column_link('/products','name','Product Name' ,'none')" />
+						
+						<th class="hideable-column">
+						<th th:replace="fragments :: column_link('/products','brand','Brand' ,'tag')" />
+						</th>
+						
+						<th class="hideable-column">
+						<th th:replace="fragments :: column_link('/products','category','Category' ,'tag')" />
+						</th>
+						
+						<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 						<th>Enabled</th>
+						</th:block>
+						
 						<th></th>
 					</tr>
 				</thead>
@@ -39,22 +83,29 @@
 						</td>
 						<td>
 						<a class="link-detail"	th:href="@{'/products/detail/' +${product.id}}"
-								title="View details of this Product"> 
+								th:title="${product.name}"> 
 								[[${product.name}]] </a>
 						</td>
-						<td>[[${product.brand.name}]]</td>
-						<td>[[${product.category.name}]]</td>
+						<td class="hideable-column">[[${product.brand.name}]]</td>
+						<td class="hideable-column">[[${product.category.name}]]</td>
+						<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 						<td>
 							<div th:replace="fragments :: status(${product.enabled},'product', '/products/' +${product.id})"></div>	
 						</td>
+						</th:block>
 						<td>
 							<a class="fas fa-file-alt fa-2x icon-green link-detail"
 								th:href="@{'/products/detail/' +${product.id}}"
 								title="View details of this Product"></a>
 								&nbsp;&nbsp;
+						<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor','SalesPerson')">
 						<div th:replace="fragments :: edit('product', '/products/edit/' +${product.id})"/>
-						&nbsp;&nbsp;
+						&nbsp;
+						</th:block>
+						<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+						&nbsp;
 						<div th:replace="fragments :: delete('product',${product.id} ,'/products/delete/' +${product.id},true)" />
+						</th:block>
 						</td>
 					</tr>
 				</tbody>
@@ -63,21 +114,32 @@
 		
 	<div class="less-details">
 			<div th:each="product : ${listProducts}" class="row m-1">
-			<div class="col-6">
+			<div class="col-4">
+				<img th:src="@{${product.mainImagePath}}" style="width:80px" class="img-fluid" />
 			</div>
-			<div class="col-6">
-				<div>[[${product.name}]]</div>
+			<div class="col-8">
+				<div>
+					<a class="link-detail"
+						th:href="@{'/products/detail/' +${product.id}}">[[${product.name}]]</a>
+				</div>
 				<div class="mt-2">
-						<div th:replace="fragments :: edit('product', '/products/edit/' +${product.id})"/>
-						&nbsp;
-						<div th:replace="fragments :: delete('product',${product.id} ,'/products/edit/' +${product.id},true)"/>
+					<a class="fas fa-file-alt fa-2x icon-green link-detail"
+						th:href="@{'/products/detail/' +${product.id}}"> </a>
+					<th:block sec:authorize="hasAnyAuthority('Admin','Editor','SalesPerson')">
+					&nbsp;
+					<div th:replace="fragments :: edit('product', '/products/edit/' +${product.id})"/>
+					</th:block>
+					<th:block sec:authorize="hasAnyAuthority('Admin','Editor')">
+					&nbsp;
+					<div th:replace="fragments :: delete('product',${product.id} ,'/products/edit/' +${product.id},true)"/>
+					</th:block>
 				</div>
 			</div>
 		</div>
 		</div>
 		
 
-		<div th:replace="fragments :: pagination('/brands' , 'brands' )"></div>
+		<div th:replace="fragments :: pagination('/products' , 'products' )"></div>
 
 		<div th:replace="modal_fragments :: confirm_modal"></div>
 
@@ -107,7 +169,10 @@
 			linkDetailURL = $(this).attr("href");
 			$("#detailModal").modal("show").find(".modal-content").load(linkDetailURL);
 		});
-				
+		
+		$("#dropdownCategory").on("change",function(){
+			$("#searchForm").submit();
+		});
 		
 	</script>
 
