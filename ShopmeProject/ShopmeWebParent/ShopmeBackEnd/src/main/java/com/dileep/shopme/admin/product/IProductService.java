@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import com.dileep.shopme.common.entity.Product;
+import com.dileep.shopme.common.exception.ProductNotFoundException;
 
 public interface IProductService {
 

@@ -2,8 +2,8 @@ package com.dileep.shopme.admin.category;
 
 import java.util.List;
 
-import com.dileep.shopme.admin.user.UserNotFoundException;
 import com.dileep.shopme.common.entity.Category;
+import com.dileep.shopme.common.exception.CategoryNotFoundException;
 
 public interface ICategoryService {
 

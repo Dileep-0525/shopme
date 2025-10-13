@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.dileep.shopme.admin.brand.IBrandRepository;
 import com.dileep.shopme.common.entity.Category;
+import com.dileep.shopme.common.exception.CategoryNotFoundException;
 
 @Service
 public class CategoryServiceImpl implements ICategoryService {

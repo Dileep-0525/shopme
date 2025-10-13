@@ -1,4 +1,4 @@
-package com.dileep.shopme.admin.category;
+package com.dileep.shopme.common.exception;
 
 public class CategoryNotFoundException extends Exception{
 

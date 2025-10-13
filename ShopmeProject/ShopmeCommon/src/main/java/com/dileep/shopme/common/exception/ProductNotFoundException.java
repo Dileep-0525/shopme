@@ -1,4 +1,4 @@
-package com.dileep.shopme.admin.product;
+package com.dileep.shopme.common.exception;
 
 public class ProductNotFoundException extends Exception{
 

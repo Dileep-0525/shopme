@@ -23,6 +23,7 @@ import com.dileep.shopme.admin.security.ShopmeUserDetails;
 import com.dileep.shopme.common.entity.Brand;
 import com.dileep.shopme.common.entity.Category;
 import com.dileep.shopme.common.entity.Product;
+import com.dileep.shopme.common.exception.ProductNotFoundException;
 
 
 @Controller
@@ -160,14 +161,16 @@ public class ProductController {
 		
 		if(categoryId !=null) model.addAttribute("categoryId", categoryId);
 		
-		model.addAttribute("totalPages",page.getTotalPages());
-		model.addAttribute("totalItems",page.getTotalElements());
+		
 		model.addAttribute("currentPage",pageNum);
+		model.addAttribute("totalPages",page.getTotalPages());
+		model.addAttribute("startCount", startCount);
+		model.addAttribute("endCount", endCount);
+		model.addAttribute("totalItems",page.getTotalElements());
 		model.addAttribute("sortField",sortField);
 		model.addAttribute("sortDir",sortDir);
 		model.addAttribute("keyword",keyword);
-		model.addAttribute("startCount", startCount);
-		model.addAttribute("endCount", endCount);
+		
 		
 		model.addAttribute("listProducts",listProducts);
 		model.addAttribute("listCategories", listCategories);
