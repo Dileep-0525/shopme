@@ -4,6 +4,7 @@ $(document).ready(function(){
 		document.logoutForm.submit()
 	})
 	customizeDropDownMenu();
+	customizeTab();
 })
 
 function customizeDropDownMenu(){
@@ -17,5 +18,17 @@ function customizeDropDownMenu(){
 	)
 	$(".dropdown > a").click(function(){
 		location.href = this.href;
+	})
+}
+
+function customizeTab(){
+	//javascript to enable link to tab
+	var url = document.location.toString();
+	if(url.match('#')){
+		$('.nav-tabs a[href="#' + url.split("#")[1] +'"').tab('show');
+	}
+	//change hash for page-reload
+	$('.nav-tabs a').on('shown.bs.tab',function(e){
+		window.location.hash = e.target.hash;
 	})
 }

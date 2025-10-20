@@ -24,10 +24,10 @@ public class SettingRepositoryTest {
 	
 	@Test
 	public void testCreateGeneralSettings() {
-//		Setting setting = new Setting("SITE_NAME","Shopeme",SettingCategory.GENERAL);
+		Setting setting = new Setting("SITE_NAME","Shopeme",SettingCategory.GENERAL);
 		Setting siteLogo = new Setting("SITE_LOGO","Shopeme.png",SettingCategory.GENERAL);
 		Setting copyright = new Setting("COPYRIGHT","Copyright (C) 2021 Shopme Ltd.",SettingCategory.GENERAL);
-		settingRepository.saveAll(List.of(siteLogo,copyright));
+		settingRepository.saveAll(List.of(setting,siteLogo,copyright));
 		
 		Iterable<Setting> iterable = settingRepository.findAll();
 		

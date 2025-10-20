@@ -1,4 +1,4 @@
-package com.dileep.shopme.admin.country;
+package com.dileep.shopme.admin.state;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -12,20 +12,21 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.dileep.shopme.admin.country.ICountryRepository;
 import com.dileep.shopme.common.entity.Country;
+import com.dileep.shopme.common.entity.State;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//@DataJpaTest
+
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CountryRestControllerTests {
+public class StateRestControllerTests {
 
 	@Autowired
 	MockMvc mockMvc;
@@ -34,79 +35,74 @@ public class CountryRestControllerTests {
 	ObjectMapper objectMapper;
 	
 	@Autowired
-	ICountryRepository entityManager;
+	ICountryRepository countryRepository;
+	
+	@Autowired
+	IStateRepository stateRepository;
 	
 	@Test
 	@WithMockUser(username="vasupallidileep525@gmail.com", password = "Dileep@2000" , roles = "ADMIN" )
-	public void testListCountries() throws Exception {
-		String url ="/countries/list";
-		MvcResult result = mockMvc.perform(get(url)).andExpect(status().isOk()).andDo(print()).andReturn();
-		String jsonResponse = result.getResponse().getContentAsString();
-		System.out.println(jsonResponse);
-		Country[] countries = objectMapper.readValue(jsonResponse, Country[].class);
-		
-		for(Country country:countries) {
-			System.out.println(country);
-		}
-		
-		assertThat(countries).hasSizeGreaterThan(0);
-	}
+	public void testListByCountries() throws JsonProcessingException,Exception {
+		Long countryId = 1l;
+		String url = "/states/list_by_country/"+countryId;
 
-	@Test
+		MvcResult result = mockMvc.perform(get(url)).andExpect(status().isOk()).andDo(print()).andReturn();
+	
+		String jsonResponse = result.getResponse().getContentAsString();
+		State[] states = objectMapper.readValue(jsonResponse, State[].class);
+		assertThat(states).hasSizeGreaterThan(1);
+		
+	}
+	
 	@WithMockUser(username="vasupallidileep525@gmail.com", password = "Dileep@2000" , roles = "ADMIN" )
-	public void testCreateCountry() throws JsonProcessingException,Exception {
-		String url = "/countries/save";
-		String countryName = "Canada";
-		String countryCode = "CA";
-		Country country = new Country(countryName,countryCode);
+	public void testCreateState() throws JsonProcessingException,Exception {
+		String url = "/states/save";
+		Long countryId = 2l;
+		Country country = countryRepository.findById(countryId).get();
+		State state = new State("Arizona",country);
 		
 		 MvcResult result = mockMvc.perform(post(url).contentType("application/json")
-				.content(objectMapper.writeValueAsString(country)).with(csrf())).andDo(print()).andExpect(status().isOk()).andReturn();
+					.content(objectMapper.writeValueAsString(state))
+					.with(csrf()))
+				 .andDo(print())
+				 .andExpect(status().isOk())
+				 .andReturn();
 	
-		String response = result.getResponse().getContentAsString();
 
-		Long countryId = Long.parseLong(response);
-		Optional<Country> findById = entityManager.findById(countryId);
+		String response= result.getResponse().getContentAsString();
+		Long stateId = Long.parseLong(response);
+		
+		Optional<State> findById = stateRepository.findById(stateId);
+		
 		assertThat(findById.isPresent());
-		
-		Country savedCountry = entityManager.findById(countryId).get();
-		
-		assertThat(savedCountry.getName()).isEqualTo(savedCountry.getName());
 	}
 	
-	
-	@Test
 	@WithMockUser(username="vasupallidileep525@gmail.com", password = "Dileep@2000" , roles = "ADMIN" )
-	public void testUpdateCountry() throws JsonProcessingException,Exception {
-		String url = "/countries/save";
-		Long countryId = 1l;
-		String countryName = "China";
-		String countryCode = "CN";
-		Country country = new Country(countryId,countryName,countryCode);
-		
-		mockMvc.perform(post(url).contentType("application/json")
-				.content(objectMapper.writeValueAsString(country)).with(csrf())).andDo(print()).andExpect(status().isOk()).andExpect(content().string(String.valueOf(countryId)));
-	
+	public void testUpdateState() throws JsonProcessingException,Exception {
+		String url = "/states/save";
+		Long stateId = 9l;
+		String stateName = "Alaska";
+		State state = stateRepository.findById(stateId).get();
 
-		Optional<Country> findById = entityManager.findById(countryId);
+		mockMvc.perform(post(url).contentType("application/json")
+				.content(objectMapper.writeValueAsString(state)).with(csrf())).andDo(print()).andExpect(status().isOk()).andExpect(content().string(String.valueOf(stateId)));
+		
+		Optional<State> findById = stateRepository.findById(stateId);
 		assertThat(findById.isPresent());
 		
-		Country savedCountry = entityManager.findById(countryId).get();
-		
-		assertThat(savedCountry.getName()).isEqualTo(savedCountry.getName());
+		State updatedState = findById.get();
+		assertThat(updatedState.getName()).isEqualTo(stateName);
 	}
 	
 	@Test
 	@WithMockUser(username="vasupallidileep525@gmail.com", password = "Dileep@2000" , roles = "ADMIN" )
 	public void testDeleteCountry() throws JsonProcessingException,Exception {
-		Long countryId = 1l;
-		String url = "/countries/delete/" +countryId;
+		Long stateId = 1l;
+		String url = "/states/delete/" +stateId;
 		
 		mockMvc.perform(get(url)).andExpect(status().isOk());
 
-		Optional<Country> findById = entityManager.findById(countryId);
+		Optional<State> findById = stateRepository.findById(stateId);
 		assertThat(findById).isNotPresent();
 	}
-		
-	
 }

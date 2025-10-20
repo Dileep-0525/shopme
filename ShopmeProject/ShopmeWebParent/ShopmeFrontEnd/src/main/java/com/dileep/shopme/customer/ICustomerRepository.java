@@ -1,0 +1,21 @@
+package com.dileep.shopme.customer;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+
+import com.dileep.shopme.common.entity.Customer;
+
+public interface ICustomerRepository extends CrudRepository<Customer, Long> {
+
+	@Query("SELECT c FROM Customer c where c.email= ?1")
+	public Customer findByEmail(String email);
+	
+	@Query("SELECT c FROM Customer c where c.verificationCode= ?1")
+	public Customer findByVerificationCode(String verificationCode);
+	
+	@Modifying
+	@Query("UPDATE Customer c SET c.enabled=true  WHERE c.id= ?1")
+	public void enable(Long id);
+	
+}
