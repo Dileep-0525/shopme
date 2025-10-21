@@ -11,5 +11,9 @@ public interface ISettingService {
 	public GeneralSettingBag getGeneralSettings();
 
 	public void saveAll(Iterable<Setting> settings);
+
+	public List<Setting> getMailServerSettings();
+
+	public List<Setting> getMailTemplateSettings();
 	
 }

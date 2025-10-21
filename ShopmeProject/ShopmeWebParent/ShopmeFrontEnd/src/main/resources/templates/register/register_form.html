@@ -9,8 +9,8 @@
 		<div class="text-center">
 			<h2>Customer Registration</h2>
 		</div>
-		<form th:action="@{create_customer}" method="post" th:object="${customer}" 
-			style="max-width: 600px;margin:0 auto" >
+		<form th:action="@{/create_customer}" method="post" th:object="${customer}" 
+			style="max-width: 600px;margin:0 auto" onsubmit="return checkEmailUnique(this);">
 		<div class="border border-secondary rounded p-3">
 			<div class="form-group row">
 				<label class="col-sm-4 col-form-label">First Name:</label>
@@ -164,11 +164,11 @@
 		}
 		
 		function checkEmailUnique(form) {
-			url = "[[@{/customers/check_unique_email]]";
+			url = contextPath + "customers/check_unique_email";
 			customerEmail = $("#email").val();
 			csrfValue = $("input[name='_csrf']").val();
 
-			params = {email : userEmail,_csrf : csrfValue};
+			params = {email : customerEmail,_csrf : csrfValue};
 
 			$.post( url, params, function(response) {
 						if (response == "OK") {
@@ -182,7 +182,7 @@
 						showErrorModal( "Could not connect to the server");
 			});
 			return false;
-		}	
+		}
 		function showModalDialog(title, message) {
 			$("#modalTitle").text(title);
 			$("#modalBody").text(message);
