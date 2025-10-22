@@ -13,4 +13,6 @@ public interface ICustomerService {
 
 	public void registerCustomer(Customer customer);
 
+	public boolean verify(String verificationCode);
+
 }

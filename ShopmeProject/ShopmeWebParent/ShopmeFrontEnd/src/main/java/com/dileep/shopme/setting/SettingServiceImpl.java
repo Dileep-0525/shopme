@@ -1,6 +1,5 @@
 package com.dileep.shopme.setting;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,12 @@ public class SettingServiceImpl implements ISettingService{
 	public List<Setting> getGeneralSettings() {
 		return settingRepository.findByTwoCategories(SettingCategory.GENERAL, SettingCategory.CURRENCY);
 	}
-//	@Override
-//	public void saveAll(Iterable<Setting> settings) {
-//		settingRepository.saveAll(settings);
-//	}
+
+	@Override
+	public EmailSettingBag getEmailSettings() {
+		List<Setting> settings = settingRepository.findByCategory(SettingCategory.MAIL_SERVER);
+		settings.addAll(settingRepository.findByCategory(SettingCategory.MAIL_TEMPLATES));
+		
+		return new EmailSettingBag(settings);
+	}
 }

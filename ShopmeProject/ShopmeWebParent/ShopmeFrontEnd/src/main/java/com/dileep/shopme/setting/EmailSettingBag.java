@@ -14,6 +14,9 @@ public class EmailSettingBag extends SettingBag {
 	public String getHost() {
 		return super.getValue("MAIL_HOST");
 	}
+	public int getPort() {
+		return Integer.parseInt(super.getValue("MAIL_PORT"));
+	}
 	
 	public String getUsername() {
 		return super.getValue("MAIL_USERNAME");

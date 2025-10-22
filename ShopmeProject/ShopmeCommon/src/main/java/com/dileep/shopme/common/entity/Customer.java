@@ -145,6 +145,8 @@ public class Customer {
 		return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + "]";
 	}
 	
-	
+	public String getFullName() {
+		return firstName + " " + lastName ;
+	}
 	
 }
